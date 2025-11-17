@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +16,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+require_once __DIR__.'/admin.php';
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Authentication routes
+Route::get('/login', [LoginController::class, 'showLogin'])
+    ->name('login')
+    ->middleware('guest');
+Route::post('/login', [LoginController::class, 'login'])
+    ->name('login.attempt')
+    ->middleware('guest');
+Route::post('logout', [LoginController::class, 'logout'])
+    ->name('logout')
+    ->middleware('auth');
+Route::post('update-password/{user}', [LoginController::class, 'updatePassword'])
+    ->name('updatePassword')
+    ->middleware('auth');
+
